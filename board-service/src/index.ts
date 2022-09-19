@@ -1,20 +1,37 @@
-import express from 'express';
-import IO from 'socket.io';
-import http from 'http';
-import 'dotenv/config';
+import express from "express";
+import cors from 'cors';
+import IO from "socket.io";
+import http from "http";
+import "dotenv/config";
+
+import { boardRouter, registerBoardEvents } from "./router/board";
 
 const app = express();
-const server = http.createServer(app);
-const io = new IO.Server(server);
+app.use(cors());
 
-io.on('connetion', (socket) => {
-    console.log('New connection: ', socket.id);
+const server = http.createServer(app);
+const io = new IO.Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["*"],
+  },
 });
 
-app.get('/', (req, res) => {
-    res.send('Welcome');
+io.on("connection", (socket: IO.Socket) => {
+  console.log("New connection: ", socket.id);
+  registerBoardEvents(socket, io);
+
+  socket.on("join-board", ({ boardId }) => {
+    console.log("joining to board", boardId);
+    // socket.join(boardId);
+  });
+});
+
+app.use(boardRouter);
+app.get("/ping", (_, res) => {
+  res.send("pong");
 });
 
 server.listen(process.env.PORT, () => {
-    console.log('Server is running')
+  console.log("Server is running on port: ", process.env.PORT);
 });
