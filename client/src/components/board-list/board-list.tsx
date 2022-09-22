@@ -1,45 +1,50 @@
 import React from 'react';
-import { SocketContext } from '../../context';
 import { useBoardsManager } from '../../services/boards/boardsManager';
-import { Board } from '../../types';
-
+import { socketService } from '../../services/socket';
+import LoadErrorView from '../../views/LoadError';
+import LoadingList from '../loading/loading-list';
+import ReloadButton from '../reload-button';
 
 export const BoardList: React.FC<any> = () => {
-    const {socket} = React.useContext(SocketContext);
-    const [inputTitle, setInputTitle] = React.useState('');
+  const [inputTitle, setInputTitle] = React.useState('');
 
-    const {data, error, loading, addBoard} = useBoardsManager();
+  const { data, error, loading, addBoard, refetch } = useBoardsManager();
 
-    React.useEffect(() => {
-        socket.on('board-created', ({ board }) => {
-            addBoard(board);
-        });
+  React.useEffect(() => {
+    socketService.on('board-created', ({ board }) => {
+      addBoard(board);
+    });
 
-        return () => {
-            socket.off('board-created');
-        }
-    }, [addBoard]);
-
-    const handleBoardCreation = () => {
-        const title = inputTitle;
-        setInputTitle('');
-        socket.emit('create-board', { title });
+    return () => {
+      socketService.off('board-created');
     }
+  }, [addBoard]);
 
-    if(loading) return <p>Loading...</p>
-    if(error || !data) return <p>Error loading data</p>
+  const handleBoardCreation = () => {
+    const title = inputTitle;
+    setInputTitle('');
+    socketService.emit('create-board', { title });
+  }
 
+  if (loading) return <LoadingList />
+
+  if (error || !data) {
     return (
-        <>
-            <input value={inputTitle} onChange={(e) => { setInputTitle(e.target.value) }} name='create-board-input' />
-            <button onClick={handleBoardCreation}>Yes</button>
-            <br />
-            <br />
-            <div>
-                {data.boards.map(b => {
-                    return <p key={b.id}>{b.title}</p>
-                })}
-            </div>
-        </>
+      <LoadErrorView>
+        <ReloadButton onClick={refetch} />
+      </LoadErrorView>
     );
+  }
+
+  return (
+    <div>
+      <input value={inputTitle} onChange={(e) => { setInputTitle(e.target.value) }} name='create-board-input' />
+      <button onClick={handleBoardCreation}>Yes</button>
+      <div>
+        {data.boards.map(b => {
+          return <p key={b.id}>{b.title}</p>
+        })}
+      </div>
+    </div>
+  );
 }

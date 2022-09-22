@@ -1,14 +1,14 @@
 import React from "react";
 import { io, Socket } from "socket.io-client";
 
-export interface SocketContext {
+export interface ISocketContext {
     socket: Socket;
 }
 
-export const socket = io('http://localhost:3001', {
+const socket = io('http://localhost:3001', {
     transports: ['websocket']
 });
 
-export const SocketContext = React.createContext<SocketContext>({
+export const SocketContext = React.createContext<ISocketContext>({
     socket
 });
