@@ -4,6 +4,7 @@ import { socketService } from '../../services/socket';
 import LoadErrorView from '../../views/LoadError';
 import LoadingList from '../loading/loading-list';
 import ReloadButton from '../reload-button';
+import BoardCard from './board-card';
 
 export const BoardList: React.FC<any> = () => {
   const [inputTitle, setInputTitle] = React.useState('');
@@ -41,9 +42,7 @@ export const BoardList: React.FC<any> = () => {
       <input value={inputTitle} onChange={(e) => { setInputTitle(e.target.value) }} name='create-board-input' />
       <button onClick={handleBoardCreation}>Yes</button>
       <div>
-        {data.boards.map(b => {
-          return <p key={b.id}>{b.title}</p>
-        })}
+        {data.boards.map(b => <BoardCard data={b} />)}
       </div>
     </div>
   );
