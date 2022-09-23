@@ -10,7 +10,7 @@ interface BoardsResult {
 
 const boardsURL = "http://localhost:3001/boards";
 
-export const useBoardsManager = () => {
+export const useBoardListManager = () => {
   const [boardsState, setBoards] = React.useState<BoardsResult>({
     boards: [],
     count: 0,

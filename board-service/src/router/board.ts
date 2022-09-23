@@ -14,7 +14,7 @@ boardRouter.get("/boards", (req, res) => {
 boardRouter.get("/boards/:id", (req, res) => {
   const {id} = req.params;
   const board = getBoardById(id);
-  if(!board) return res.status(404);
+  if(!board) return res.status(404).end();
   res.json(board);
 });
 

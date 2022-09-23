@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useBoardsManager } from '../../services/boards/boardsManager';
+import { useBoardListManager } from '../../services/boards/board-list-manager';
 import { socketService } from '../../services/socket';
 import LoadErrorView from '../../views/LoadError';
 import LoadingList from '../loading/loading-list';
@@ -11,10 +11,11 @@ import BoardCard from './board-card';
 import { BoardListContainer, BoardTitleInput, CreateBoardContainer, MainCTA } from './styles';
 
 export const BoardList: React.FC<any> = () => {
-  const [inputTitle, setInputTitle] = React.useState('');
+  const [title, setTitle] = React.useState('');
+  const [disableCreate, setDisableCreate] = React.useState(true);
 
   const navigate = useNavigate();
-  const { data, error, loading, addBoard, refetch } = useBoardsManager();
+  const { data, error, loading, addBoard, refetch } = useBoardListManager();
 
   React.useEffect(() => {
     socketService.on('board-created', ({ board }) => {
@@ -27,9 +28,15 @@ export const BoardList: React.FC<any> = () => {
   }, [addBoard]);
 
   const handleBoardCreation = () => {
-    const title = inputTitle;
-    setInputTitle('');
+    setTitle('');
+    setDisableCreate(true);
     socketService.emit('create-board', { title });
+  }
+
+  const handleTitleUpdate = (newtitle: string) => {
+    const hasMinLen = newtitle.length <= 0;
+    setDisableCreate(hasMinLen);
+    setTitle(newtitle);
   }
 
   const handleOpenBoard = (id: string) => {
@@ -50,12 +57,18 @@ export const BoardList: React.FC<any> = () => {
     <BoardListContainer>
       <CreateBoardContainer>
         <BoardTitleInput
-          value={inputTitle}
-          onChange={(e) => { setInputTitle(e.target.value) }}
+          value={title}
+          onChange={(e) => { handleTitleUpdate(e.target.value) }}
           placeholder="Board title"
           name='create-board-input'
         />
-        <MainCTA onClick={handleBoardCreation}>Yes</MainCTA>
+        <MainCTA
+          className={`${disableCreate ? 'disabled' : ''}`}
+          disabled={disableCreate}
+          onClick={handleBoardCreation}
+        >
+          Create board
+        </MainCTA>
       </CreateBoardContainer>
       <div>
         {data.boards.map(b => <BoardCard onClick={() => handleOpenBoard(b.id)} key={b.id} data={b} />)}
