@@ -1,7 +1,6 @@
 import React from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import useBoardManager from '../services/boards/board-manager';
-import { Board } from '../types';
 
 const BoardView = (props: any) => {
   const { id } = useParams();
