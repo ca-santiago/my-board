@@ -1,9 +1,10 @@
 import React from 'react';
-import { BoardList } from './components/board-list';
+import { RouterProvider } from 'react-router-dom';
+import MainRouter from './router';
 
 const App = () => {
   return (
-    <BoardList />
+    <RouterProvider router={MainRouter} />
   );
 }
 
