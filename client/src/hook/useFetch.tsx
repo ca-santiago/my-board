@@ -21,7 +21,7 @@ export function useFetch<T extends {}, D>(
     params?: D
 ): useFetchReturn<T> {
     const [data, setData] = React.useState<T | null>(null);
-    const [serviceURL, setServiceUrl] = React.useState(url);
+    const [serviceURL] = React.useState(url);
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState(false);
 

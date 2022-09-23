@@ -1,10 +1,13 @@
 import React from 'react';
+
 import { useBoardsManager } from '../../services/boards/boardsManager';
 import { socketService } from '../../services/socket';
 import LoadErrorView from '../../views/LoadError';
 import LoadingList from '../loading/loading-list';
 import ReloadButton from '../reload-button';
 import BoardCard from './board-card';
+
+import { BoardListContainer, BoardTitleInput, CreateBoardContainer, MainCTA } from './styles';
 
 export const BoardList: React.FC<any> = () => {
   const [inputTitle, setInputTitle] = React.useState('');
@@ -38,12 +41,19 @@ export const BoardList: React.FC<any> = () => {
   }
 
   return (
-    <div>
-      <input value={inputTitle} onChange={(e) => { setInputTitle(e.target.value) }} name='create-board-input' />
-      <button onClick={handleBoardCreation}>Yes</button>
+    <BoardListContainer>
+      <CreateBoardContainer>
+          <BoardTitleInput
+            value={inputTitle}
+            onChange={(e) => { setInputTitle(e.target.value) }}
+            placeholder="Board title"
+            name='create-board-input'
+          />
+          <MainCTA onClick={handleBoardCreation}>Yes</MainCTA>
+      </CreateBoardContainer>
       <div>
         {data.boards.map(b => <BoardCard data={b} />)}
       </div>
-    </div>
+    </BoardListContainer>
   );
 }

@@ -2,20 +2,18 @@ import React from 'react';
 import { Board } from '../../types';
 import moment from 'moment';
 
-import './board-card-styles.css';
+import { BoardCardContainer, BoardCardHeader, SubText } from './styles';
 
 export interface BoardCardProps {
-    data: Board;
+  data: Board;
 }
 
-const BoardCard = ({data}: React.PropsWithChildren<BoardCardProps>) => {
+const BoardCard = ({ data }: React.PropsWithChildren<BoardCardProps>) => {
   return (
-    <div className='board-card-container'>
-        <div className='board-title-container'>
-            <h3>{data.title}</h3>
-        </div>
-        <p className='card-subtext' >{moment(data.createdAt, false).format('dd mm yyyy, hh:mm a')}</p>
-    </div>
+    <BoardCardContainer>
+      <BoardCardHeader>{data.title}</BoardCardHeader>
+      <SubText>{moment(data.createdAt, false).format('dd mm yyyy, hh:mm a')}</SubText>
+    </BoardCardContainer>
   )
 }
 

@@ -13,7 +13,7 @@ const ReloadButton = ({ onClick }: ReloadButtonProps) => {
 
   return (
     <div>
-      <button onClick={handleOnclick}></button>
+      <button onClick={handleOnclick}>Reload</button>
     </div>
   )
 }
